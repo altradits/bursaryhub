@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impact Dashboard Panel | BursaryFund</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .layout-deck { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; margin-top: 2.5rem; }
+        .metric-block { background: linear-gradient(135deg, #002f6c 0%, #0094a8 100%); color: white; border: none; padding: 2rem; }
+        .metric-block p { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; }
+        .metric-block h2 { font-size: 2.5rem; font-weight: 800; margin: 0.5rem 0 1rem 0; font-variant-numeric: tabular-nums; }
+        
+        .upload-dropzone { border: 2px dashed rgba(0, 47, 108, 0.2); border-radius: var(--radius); padding: 4rem 2rem; text-align: center; background: rgba(255, 255, 255, 0.5); cursor: pointer; transition: var(--transition); }
+        .upload-dropzone.active-drag { border-color: var(--ifc-accent); background: rgba(0, 148, 168, 0.04); }
+        .upload-dropzone h4 { color: var(--ifc-blue); margin: 1rem 0 0.5rem 0; font-size: 1.2rem; }
+        .upload-dropzone p { color: #64748b; font-size: 0.9rem; }
+        .upload-dropzone input { display: none; }
+        
+        @media(max-width: 900px) { .layout-deck { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../home.html" class="brand">BursaryFund<span>Hub</span></a>
+            <a href="../home.html" style="text-decoration:none; font-weight:700; color:#64748b; font-size:0.9rem;">Disconnect Session</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header style="margin-top: 1rem;">
+            <h2 style="color: var(--ifc-blue); font-weight: 800;">Funder Impact Dashboard</h2>
+            <p style="color: #64748b;">Real-time management configuration for public funding pools[cite: 18].</p>
+        </header>
+
+        <div class="layout-deck">
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                <div class="glass-panel metric-block">
+                    <p>Audited Escrow Capital Balance [cite: 44]</p>
+                    <h2>5,000,000 KES</h2>
+                    <div style="font-size:0.8rem; background:rgba(255,255,255,0.15); padding:0.5rem; border-radius:4px;">
+                        ✓ Active Real-Time Liquidity Reporting Verified [cite: 17, 71]
+                    </div>
+                </div>
+
+                <div class="glass-panel" style="padding:2rem;">
+                    <h3 style="color:var(--ifc-blue); font-size:1.1rem; margin-bottom:1.25rem; font-weight:800; text-transform:uppercase;">Deploy Funding Pool [cite: 18, 54]</h3>
+                    <form id="poolDeploymentForm">
+                        <div class="form-group">
+                            <label for="poolBudget">Target Pool Budget Allocation (KES) [cite: 55]</label>
+                            <input type="number" id="poolBudget" class="form-input" min="1000" placeholder="e.g., 5000000" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%; font-size:0.85rem;">Initialize Vault Pool [cite: 54]</button>
+                    </form>
+                    <div id="poolFeedback" class="feedback-msg"></div>
+                </div>
+            </div>
+
+            <div class="glass-panel" style="padding: 2.5rem;">
+                <h3 style="color: var(--ifc-blue); margin-bottom: 1.5rem; font-weight: 800;">Ingest Cryptographic Beneficiary Roster</h3>
+                <p style="font-size: 0.95rem; color:#475569; margin-bottom:1.5rem;">Upload internal student lists via standard comma-separated metrics. The engine maps IDs directly into sub-allocation escrow code tables[cite: 58, 59].</p>
+                
+                <div id="uploadDropzone" class="upload-dropzone">
+                    <span style="font-size:3rem;">💾</span>
+                    <h4>Upload Student Roster (CSV) [cite: 58]</h4>
+                    <p>Drag spreadsheet files directly into this zone, or click to explore internal file structures.</p>
+                    <input type="file" id="csvFileInput" accept=".csv">
+                </div>
+                <div id="rosterFeedback" class="feedback-msg"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/main.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

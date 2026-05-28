@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Institutional Settlement Control | BursaryFund</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .split-deck { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; }
+        @media(max-width: 950px) { .split-deck { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../home.html" class="brand">BursaryFund<span>Hub</span></a>
+            <a href="../home.html" style="text-decoration:none; font-weight:700; color:#64748b; font-size:0.9rem;">Disconnect School Ledger [cite: 39]</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h2 style="color: var(--ifc-blue); font-weight: 800;">Institutional Billing Deck</h2>
+            <p style="color: #64748b;">Configure base billing structures and verify active digital claims[cite: 8, 63].</p>
+        </header>
+
+        <div class="split-deck">
+            <div class="glass-panel" style="padding: 2.5rem;">
+                <h3 style="color: var(--ifc-blue); margin-bottom: 0.5rem; font-weight:800;">Panel A: Fee Master Structure [cite: 8]</h3>
+                <p style="font-size: 0.85rem; color:#64748b; margin-bottom:1.5rem;">Publish the official, audited academic fee configuration to prevent client calculation forgery[cite: 6, 8].</p>
+                
+                <form id="feeMasterForm">
+                    <div class="form-group">
+                        <label for="courseIdentifier">Course Code Key Profile</label>
+                        <input type="text" id="courseIdentifier" class="form-input" placeholder="e.g., COMP-SCI-Y1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tuitionCost">Tuition Fee Metric (KES)</label>
+                        <input type="number" id="tuitionCost" class="form-input" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="accommodationCost">Accommodation Allotment (KES)</label>
+                        <input type="number" id="accommodationCost" class="form-input" min="0" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Commit Registry Parameters [cite: 8]</button>
+                </form>
+                <div id="masterFeedback" class="feedback-msg"></div>
+            </div>
+
+            <div class="glass-panel" style="padding: 2.5rem;">
+                <h3 style="color: var(--ifc-blue); margin-bottom: 0.5rem; font-weight:800;">Panel B: Digital Payment Claim [cite: 63]</h3>
+                <p style="font-size: 0.85rem; color:#64748b; margin-bottom:1.5rem;">Generate individual student claims. Systems validate entry totals directly against Fee Master rules[cite: 10, 63].</p>
+                
+                <form id="billingClaimForm">
+                    <div class="form-group">
+                        <label for="claimTargetStudent">Target Student Registration Number [cite: 27]</label>
+                        <input type="text" id="claimTargetStudent" class="form-input" placeholder="e.g., REG-1234" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="claimTargetCourse">Target Course Code</label>
+                        <input type="text" id="claimTargetCourse" class="form-input" placeholder="e.g., COMP-SCI-Y1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="claimAggregatedTotal">Aggregate Billing Request Total (KES)</label>
+                        <input type="number" id="claimAggregatedTotal" class="form-input" placeholder="System running cross-checks..." required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Broadcast Claim Package [cite: 63]</button>
+                </form>
+                <div id="claimFeedback" class="feedback-msg"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/main.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
