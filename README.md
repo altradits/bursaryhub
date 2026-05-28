@@ -1,3 +1,1105 @@
+```
+bursaryfund/
+├── README.md                  # Project overview, setup steps, and pitch points
+├── go.mod                     # Go workspace/module configuration
+├── go.sum                     # Go module checksums
+├── Makefile                   # Team automation shortcuts
+│
+├── db/                        # DATABASE STORAGE & MIGRATIONS
+│   ├── schema.sql             # SQL script for Users, Students, Schools, Logs
+│   └── seeds.sql              # Mock Kenyan school registry & sample students
+│
+├── frontend/                  # FRONTEND CLIENT APPLICATIONS
+│   ├── index.html             # Main landing page & Router
+│   ├── assets/
+│   │   ├── css/               # Tailwind CSS styles
+│   │   └── js/                # Shared frontend logic
+│   ├── grantor/               # Donor Dashboard
+│   │   ├── dashboard.html     
+│   │   └── app.js             
+│   ├── beneficiary/           # Student Mobile Portal
+│   │   ├── portal.html        
+│   │   └── portal.js          
+│   └── institution/           # School Dashboard
+│       ├── dashboard.html     
+│       └── app.js             
+│
+├── backend/                   # GO OFF-CHAIN ORCHESTRATOR
+│   ├── main.go                # Entry point (port 8080)
+│   ├── middleware/            
+│   │   └── auth.go            # JWT token verification
+│   ├── handlers/              
+│   │   ├── auth.go            # SMS OTP login
+│   │   ├── session.go         # Session management
+│   │   ├── roster.go          # CSV roster upload
+│   │   ├── claims.go          # Payment claims
+│   │   └── feemaster.go       # Fee Master CRUD
+│   ├── repository/            
+│   │   ├── db.go              # DB connection pool
+│   │   ├── student_repo.go    # Student queries
+│   │   └── school_repo.go     # Fee Master & balance queries
+│   └── services/              
+│       ├── mpesa.go           # M-Pesa integration
+│       └── blockchain.go      # Smart contract calls
+│
+└── contracts/                 # SOLIDITY ON-CHAIN ENGINE
+    ├── BursaryEscrow.sol      # Core escrow contract
+    ├── VendorRegistry.sol     # Whitelisted schools
+    ├── scripts/               # Deployment scripts
+    └── test/                  # Unit tests
+```
+
+# BursaryHub - Technical Documentation
+
+## Version 1.0 | Last Updated: 2026-05-28
+
+---
+
+## Table of Contents
+
+1. [Project Overview](#1-project-overview)
+2. [System Architecture](#2-system-architecture)
+3. [Technology Stack](#3-technology-stack)
+4. [Database Design](#4-database-design)
+5. [API Specification](#5-api-specification)
+6. [Smart Contracts](#6-smart-contracts)
+7. [Frontend Applications](#7-frontend-applications)
+8. [Core Business Logic](#8-core-business-logic)
+9. [Installation & Deployment](#9-installation--deployment)
+10. [Testing Strategy](#10-testing-strategy)
+11. [Environment Variables](#11-environment-variables)
+12. [Troubleshooting](#12-troubleshooting)
+
+---
+
+## 1. Project Overview
+
+### 1.1 What is BursaryHub?
+
+BursaryHub is a **free, fraud-proof scholarship disbursement platform** that connects donors, schools, and students on a single transparent system.
+
+### 1.2 Core Principles
+
+| Principle | Description |
+|-----------|-------------|
+| **Zero Subscription** | Platform is free for all users |
+| **1% Success Fee** | Fee taken only when money moves |
+| **Three-Way Verification** | Student + School + Fee Master must match |
+| **Full Transparency** | All costs visible before deposit |
+| **Auto-Balancing** | No manual fee calculations |
+
+### 1.3 Key Metrics
+
+| Metric | Target |
+|--------|--------|
+| Disbursement Time | < 60 seconds |
+| Fraud Incidents | 0 |
+| Platform Uptime | 99.9% |
+| Donor Cost Visibility | 100% upfront |
+
+---
+
+## 2. System Architecture
+
+### 2.1 High-Level Architecture
+
+
+### 2.2 Data Flow
+Donor Deposit (Any Currency)
+↓
+Conversion to USDT (Fee #1)
+↓
+USDT Locked in Smart Contract Escrow
+↓
+School Updates Fee Master → Auto Balance Calculation
+↓
+School Creates Payment Claim
+↓
+Student Keys Balance + Approves with OTP
+↓
+Three-Way Verification (Student vs School vs Fee Master)
+↓
+USDT → KSH Conversion (Fee #2)
+↓
+1% Platform Fee Deducted (Fee #3)
+↓
+School Receives KSH in Bank Account
+↓
+All Costs Visible on Donor Dashboard
+
+
+---
+
+## 3. Technology Stack
+
+### 3.1 Backend
+
+| Component | Technology | Version |
+|-----------|------------|---------|
+| Language | Go | 1.21+ |
+| HTTP Router | Gorilla Mux | v1.8.1 |
+| Database Driver | lib/pq | v1.10.9 |
+| Auth | JWT (golang-jwt) | v5.0.0 |
+| Blockchain | go-ethereum | v1.13.0 |
+
+### 3.2 Database
+
+| Component | Technology |
+|-----------|------------|
+| Database | PostgreSQL 15+ |
+| Migration | Raw SQL |
+| Connection Pool | sql.DB (built-in) |
+
+### 3.3 Frontend
+
+| Component | Technology |
+|-----------|------------|
+| Styling | Tailwind CSS |
+| HTTP Requests | Fetch API (native) |
+| PWA | Service Workers |
+| Charts | Chart.js |
+
+### 3.4 Blockchain
+
+| Component | Technology |
+|-----------|------------|
+| Smart Contracts | Solidity 0.8.19 |
+| Network | Polygon / Celo |
+| Test Environment | Hardhat |
+| Token | USDT (ERC-20) |
+
+### 3.5 External Services
+
+| Service | Purpose |
+|---------|---------|
+| Twilio / Africa's Talking | SMS OTP |
+| M-Pesa API | Fiat on/off ramp |
+| Chainlink | ERP Oracles |
+| Infura | Blockchain RPC |
+
+---
+
+## 4. Database Design
+
+### 4.1 Entity Relationship Diagram
+┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+│ users │ │ donors │ │scholarships │
+├─────────────┤ ├─────────────┤ ├─────────────┤
+│ id (PK) │◄────│ user_id (FK)│ │ id (PK) │
+│ email │ │ org_name │ │ donor_id(FK)│
+│ phone │ │ kyc_status │ │ title │
+│ role │ │ total_donated│ │ coverage_type│
+└──────┬──────┘ └─────────────┘ └──────┬──────┘
+│ │
+▼ ▼
+┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+│ schools │ │ students │ │applications │
+├─────────────┤ ├─────────────┤ ├─────────────┤
+│ id (PK) │ │ id (PK) │ │ id (PK) │
+│ user_id (FK)│ │ user_id (FK)│ │scholarship_id│
+│ school_name │ │ school_id(FK)│ │ student_id │
+│ wallet_addr │ │ reg_number │ │ status │
+└──────┬──────┘ │ course │ └─────────────┘
+│ │ year_of_study│
+▼ └──────┬──────┘
+┌─────────────┐ │
+│ fee_master │ ▼
+├─────────────┤ ┌─────────────┐
+│ id (PK) │ │student_bal │
+│ school_id │ ├─────────────┤
+│ academic_year│ │ id (PK) │
+│ course │ │ student_id │
+│ tuition │ │ balance │
+└─────────────┘ └─────────────┘
+
+
+### 4.2 Complete Schema
+
+```sql
+-- ENUM TYPES
+CREATE TYPE user_role AS ENUM ('donor', 'school_admin', 'student', 'admin');
+CREATE TYPE coverage_type AS ENUM ('tuition', 'accommodation', 'food', 'transport', 'all', 'unrestricted');
+CREATE TYPE disbursement_status AS ENUM ('pending', 'verified', 'completed', 'failed', 'blocked');
+
+-- USERS TABLE
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    phone VARCHAR(20) UNIQUE NOT NULL,
+    national_id VARCHAR(20) UNIQUE,
+    full_name VARCHAR(255) NOT NULL,
+    role user_role NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    is_whitelisted BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- DONORS TABLE
+CREATE TABLE donors (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    organization_name VARCHAR(255),
+    tax_id VARCHAR(100),
+    kyc_status VARCHAR(50) DEFAULT 'pending',
+    total_donated_usd DECIMAL(20,2) DEFAULT 0
+);
+
+-- SCHOOLS TABLE
+CREATE TABLE schools (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    registration_number VARCHAR(100) UNIQUE NOT NULL,
+    school_name VARCHAR(255) NOT NULL,
+    ministry_verified BOOLEAN DEFAULT FALSE,
+    bank_account_number VARCHAR(100),
+    wallet_address VARCHAR(255) UNIQUE,
+    is_whitelisted BOOLEAN DEFAULT FALSE
+);
+
+-- STUDENTS TABLE
+CREATE TABLE students (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    school_id INTEGER REFERENCES schools(id),
+    student_reg_number VARCHAR(100) UNIQUE NOT NULL,
+    course VARCHAR(255),
+    year_of_study INTEGER,
+    county VARCHAR(100),
+    gpa DECIMAL(3,2)
+);
+
+-- FEE MASTER TABLE
+CREATE TABLE fee_master (
+    id SERIAL PRIMARY KEY,
+    school_id INTEGER REFERENCES schools(id) ON DELETE CASCADE,
+    academic_year VARCHAR(20) NOT NULL,
+    course VARCHAR(255),
+    year_of_study INTEGER,
+    tuition_amount DECIMAL(15,2) DEFAULT 0,
+    accommodation_amount DECIMAL(15,2) DEFAULT 0,
+    food_amount DECIMAL(15,2) DEFAULT 0,
+    transport_amount DECIMAL(15,2) DEFAULT 0,
+    UNIQUE(school_id, academic_year, course, year_of_study)
+);
+
+-- STUDENT BALANCES TABLE
+CREATE TABLE student_balances (
+    id SERIAL PRIMARY KEY,
+    student_id INTEGER REFERENCES students(id) ON DELETE CASCADE,
+    academic_year VARCHAR(20),
+    coverage_type coverage_type NOT NULL,
+    original_fee DECIMAL(15,2) NOT NULL,
+    amount_paid DECIMAL(15,2) DEFAULT 0,
+    balance_remaining DECIMAL(15,2) NOT NULL
+);
+
+-- SCHOLARSHIPS TABLE
+CREATE TABLE scholarships (
+    id SERIAL PRIMARY KEY,
+    donor_id INTEGER REFERENCES donors(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    coverage_type coverage_type NOT NULL,
+    max_amount_per_student DECIMAL(15,2),
+    number_of_slots INTEGER,
+    eligible_courses TEXT[],
+    eligible_years INTEGER[],
+    min_gpa DECIMAL(3,2),
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+-- DISBURSEMENTS TABLE
+CREATE TABLE disbursements (
+    id SERIAL PRIMARY KEY,
+    scholarship_id INTEGER REFERENCES scholarships(id),
+    student_id INTEGER REFERENCES students(id),
+    school_id INTEGER REFERENCES schools(id),
+    amount_usdt DECIMAL(20,8) NOT NULL,
+    amount_ksh DECIMAL(15,2) NOT NULL,
+    status disbursement_status DEFAULT 'pending',
+    transaction_hash VARCHAR(255),
+    three_way_match_status VARCHAR(50) DEFAULT 'pending'
+);
+
+-- THREE-WAY VERIFICATION LOGS
+CREATE TABLE three_way_verification (
+    id SERIAL PRIMARY KEY,
+    disbursement_id INTEGER REFERENCES disbursements(id),
+    student_entered_amount DECIMAL(15,2),
+    school_keyed_amount DECIMAL(15,2),
+    fee_master_amount DECIMAL(15,2),
+    match_result BOOLEAN,
+    mismatch_reason TEXT
+);
+
+-- TRANSACTION FEES LOG
+CREATE TABLE transaction_fees (
+    id SERIAL PRIMARY KEY,
+    disbursement_id INTEGER REFERENCES disbursements(id),
+    conversion_in_fee_usd DECIMAL(10,4),
+    network_gas_fee_usd DECIMAL(10,4),
+    conversion_out_fee_ksh DECIMAL(10,2),
+    withdrawal_fee_ksh DECIMAL(10,2),
+    platform_fee_ksh DECIMAL(10,2)
+);
+
+-- AUDIT LOGS
+CREATE TABLE audit_logs (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
+    action VARCHAR(255) NOT NULL,
+    old_data JSONB,
+    new_data JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- INDEXES
+CREATE INDEX idx_users_role ON users(role);
+CREATE INDEX idx_students_school_id ON students(school_id);
+CREATE INDEX idx_fee_master_school_year ON fee_master(school_id, academic_year);
+CREATE INDEX idx_disbursements_status ON disbursements(status);
+
+
+
+5.3 Endpoints
+Authentication
+Method	Endpoint	Description
+POST	/auth/login	Request OTP
+POST	/auth/verify-otp	Verify OTP, receive JWT
+Donor Endpoints
+Method	Endpoint	Description
+POST	/donor/scholarships	Create scholarship
+GET	/donor/scholarships/{id}/applications	View applications
+POST	/donor/scholarships/{id}/applications/{appId}/approve	Approve student
+GET	/donor/disbursements	View all disbursements
+GET	/donor/impact-report	Generate impact report
+GET	/donor/cost-breakdown/{amount}	Preview all fees
+School Endpoints
+Method	Endpoint	Description
+POST	/school/fee-master	Publish fee master
+POST	/school/fee-master/bulk-update	Bulk update by course/year
+PUT	/school/students/{studentId}/balance	Update specific student balance
+POST	/school/claims	Create payment claim
+POST	/school/roster/upload	Upload CSV roster
+POST	/school/three-way-verify	Submit school verification
+Student Endpoints
+Method	Endpoint	Description
+GET	/student/scholarships	Get available scholarships
+POST	/student/scholarships/{id}/apply	Apply for scholarship
+GET	/student/balance	Get current balance
+POST	/student/three-way-verify	Submit student key-in
+POST	/student/claims/{claimId}/approve	Approve with OTP
+POST	/student/claims/{claimId}/request-otp	Request SMS OTP
+Admin Endpoints
+Method	Endpoint	Description
+POST	/admin/schools/{id}/whitelist	Whitelist school
+POST	/admin/donors/{id}/kyc	Approve donor KYC
+GET	/admin/mismatches	Get all mismatches
+POST	/admin/mismatches/{id}/resolve	Resolve mismatch
+
+
+5.4 Request/Response Examples
+Create Scholarship (Donor)
+Request:
+
+json
+POST /api/donor/scholarships
+{
+    "title": "Tech Scholars 2024",
+    "coverage_type": "tuition",
+    "max_amount_per_student": 55000,
+    "number_of_slots": 50,
+    "eligible_courses": ["Computer Science", "IT"],
+    "eligible_years": [1, 2],
+    "min_gpa": 3.5
+}
+Response:
+
+json
+{
+    "scholarship_id": 101,
+    "status": "created",
+    "matching_students": 47
+}
+Bulk Update Fee Master (School)
+Request:
+
+json
+POST /api/school/fee-master/bulk-update
+{
+    "school_id": 1,
+    "academic_year": "2024-2025",
+    "course": "Computer Science",
+    "year_of_study": 1,
+    "new_tuition": 60000
+}
+Response:
+
+json
+{
+    "success": true,
+    "students_updated": 47,
+    "formula": "New Balance = New Fee - Total Paid + Previous Unpaid",
+    "preview": [
+        {
+            "student": "John Doe",
+            "old_balance": 50000,
+            "paid_to_date": 0,
+            "new_balance": 60000
+        },
+        {
+            "student": "Jane Smith",
+            "old_balance": 30000,
+            "paid_to_date": 20000,
+            "new_balance": 40000
+        }
+    ]
+}
+Three-Way Verification (Student)
+Request:
+
+json
+POST /api/student/three-way-verify
+{
+    "disbursement_id": 501,
+    "entered_amount": 55000,
+    "upload_url": "https://..."
+}
+Response:
+
+json
+{
+    "match": true,
+    "student_amount": 55000,
+    "school_amount": 55000,
+    "fee_master_amount": 55000,
+    "status": "verified"
+}
+Get Cost Breakdown (Donor)
+Request:
+
+json
+GET /api/donor/cost-breakdown?amount=10000&currency=USD
+Response:
+
+json
+{
+    "donor_deposit": 10000,
+    "conversion_to_usdt": 15.00,
+    "network_gas_fee": 2.00,
+    "usdt_locked": 9983.00,
+    "when_disbursed": {
+        "usdt_amount": 9983,
+        "conversion_to_ksh": 500,
+        "withdrawal_fee": 100,
+        "platform_fee_1_percent": 99.83,
+        "school_receives_ksh": 9283.17
+    },
+    "total_fees_usd": 17.00,
+    "total_fees_ksh": 699.83
+}
+6. Smart Contracts
+6.1 Contract Addresses (Testnet)
+Contract	Address
+USDT (Mock)	0x...
+BursaryEscrow	0x...
+6.2 BursaryEscrow.sol
+solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
+contract BursaryEscrow is Ownable, ReentrancyGuard {
+    IERC20 public usdt;
+    
+    struct Disbursement {
+        uint256 amount;
+        address student;
+        address school;
+        bool completed;
+        uint256 timestamp;
+    }
+    
+    mapping(uint256 => Disbursement) public disbursements;
+    mapping(address => bool) public whitelistedSchools;
+    mapping(address => bool) public whitelistedDonors;
+    
+    uint256 public platformFeeBps = 100; // 1% = 100 basis points
+    address public feeCollector;
+    
+    event FundsDeposited(address donor, uint256 amount, uint256 scholarshipId);
+    event DisbursementExecuted(uint256 disbursementId, address school, uint256 amountUSDT, uint256 amountKSH);
+    event FeeCollected(uint256 amount, uint256 fee);
+    
+    constructor(address _usdt) {
+        usdt = IERC20(_usdt);
+        feeCollector = msg.sender;
+    }
+    
+    function deposit(uint256 scholarshipId, uint256 amount) external nonReentrant {
+        require(whitelistedDonors[msg.sender], "Not whitelisted");
+        require(usdt.transferFrom(msg.sender, address(this), amount), "Transfer failed");
+        emit FundsDeposited(msg.sender, amount, scholarshipId);
+    }
+    
+    function executeDisbursement(
+        uint256 disbursementId,
+        address school,
+        uint256 amountUSDT,
+        bytes32 threeWayMatchHash
+    ) external onlyOwner nonReentrant {
+        require(whitelistedSchools[school], "School not whitelisted");
+        require(!disbursements[disbursementId].completed, "Already completed");
+        
+        uint256 fee = (amountUSDT * platformFeeBps) / 10000;
+        uint256 amountToSchool = amountUSDT - fee;
+        
+        require(usdt.transfer(feeCollector, fee), "Fee transfer failed");
+        require(usdt.transfer(school, amountToSchool), "School transfer failed");
+        
+        disbursements[disbursementId] = Disbursement({
+            amount: amountToSchool,
+            student: address(0),
+            school: school,
+            completed: true,
+            timestamp: block.timestamp
+        });
+        
+        emit DisbursementExecuted(disbursementId, school, amountToSchool, amountToSchool);
+        emit FeeCollected(amountUSDT, fee);
+    }
+    
+    // Soulbound: Prevent direct token transfers
+    function transfer(address, uint256) external pure returns (bool) {
+        revert("BursaryFund: Tokens are Soulbound");
+    }
+    
+    function setWhitelistedSchool(address school, bool status) external onlyOwner {
+        whitelistedSchools[school] = status;
+    }
+    
+    function setWhitelistedDonor(address donor, bool status) external onlyOwner {
+        whitelistedDonors[donor] = status;
+    }
+}
+```
+
+========================================================================================
+
+# 🌍 BursaryHub Landing Page — Complete Feature Outline
+
+
+=======================================================================================
+
+---
+
+# 📌 Page Purpose
+
+The landing page is the first page a visitor sees when going to:
+
+```text
+bursaryhub.com
+```
+
+Its purpose is to:
+
+- Explain what BursaryHub does
+- Show who the platform is for
+- Build trust and credibility
+- Provide login & sign-up access for:
+  - Donors
+  - Schools
+  - Students
+
+---
+
+# 🧭 Section 1: Top Navigation Bar
+
+Fixed at the top of the page and visible on all screen sizes.
+
+---
+
+## Navigation Elements
+
+| Element | What It Shows / Does |
+|---|---|
+| 🟢 Logo | "BursaryHub" logo or text |
+| 🔐 Login Button | Dropdown with Donor, School & Student login |
+| 📝 Sign Up Button | Dropdown with Donor, School & Student sign up |
+| ☰ Mobile Menu Icon | Opens mobile navigation drawer |
+
+---
+
+## Navigation Preview
+
+```text
+┌────────────────────────────────────────────────────────────┐
+│ [BURSARYHUB]     [Login ▼] [Sign Up ▼] [☰ Mobile Menu]  │
+└────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# 🚀 Section 2: Hero Section
+
+The first major section users see after loading the page.
+
+---
+
+## Hero Elements
+
+| Element | What It Shows |
+|---|---|
+| Headline | Free, Fraud-Proof Scholarship Disbursement for Kenya |
+| Subheadline | Money moves only after all parties confirm the same amount |
+| Primary Button | Get Started as a Donor |
+| Secondary Button | Learn How It Works |
+| Hero Illustration | Donor → School → Verification Shield graphic |
+
+---
+
+## Hero Preview
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│                                                              │
+│  Free, Fraud-Proof Scholarship Disbursement for Kenya       │
+│                                                              │
+│  Money moves from donors to schools only when the student,  │
+│  school, and fee master all confirm the same amount.        │
+│                                                              │
+│      [ Get Started as a Donor ]                             │
+│      [ Learn How It Works ]                                 │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# 🛡️ Section 3: Trust Badges
+
+A row of trust indicators below the hero section.
+
+---
+
+## Trust Badges
+
+| Badge | What It Shows |
+|---|---|
+| 🆓 Badge 1 | Free for Schools & Students |
+| 💯 Badge 2 | 1% Fee Only on Success |
+| 🔗 Badge 3 | Blockchain Secured |
+| 📲 Badge 4 | Works with M-Pesa |
+
+---
+
+## Badge Preview
+
+```text
+┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+│ Free for    │ │ 1% Fee Only │ │ Blockchain  │ │ M-Pesa      │
+│ Schools &   │ │ on Success  │ │ Secured     │ │ Compatible  │
+│ Students    │ │             │ │             │ │             │
+└─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘
+```
+
+---
+
+# ⚠️ Section 4: The Problem Section
+
+Explains the problem BursaryHub solves.
+
+---
+
+## Problem Section Elements
+
+| Element | What It Shows |
+|---|---|
+| Section Label | The Problem |
+| Headline | Billions of shillings never reach students |
+| Stat Card 1 | 20–30% lost to fraud & leakage |
+| Stat Card 2 | 7–14 day transfer delays |
+| Stat Card 3 | 0 visibility for donors |
+| Description | Traditional bursary systems are unreliable |
+
+---
+
+## Problem Section Preview
+
+```text
+┌────────────────────────────────────────────────────────────┐
+│ THE PROBLEM                                               │
+│                                                            │
+│ Billions of shillings in scholarship funds never reach     │
+│ students.                                                  │
+│                                                            │
+│ ┌──────────┐ ┌──────────┐ ┌──────────┐                    │
+│ │ 20-30%   │ │ 7-14     │ │ 0        │                    │
+│ │ leakage  │ │ day bank │ │ visibility│                   │
+│ │ & fraud  │ │ delays   │ │ for donors│                   │
+│ └──────────┘ └──────────┘ └──────────┘                    │
+└────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# ⚙️ Section 5: How It Works (3 Steps)
+
+A three-step flow explaining the platform process.
+
+---
+
+## Steps Table
+
+| Step | Title | Description | Icon |
+|---|---|---|---|
+| 1 | Donor Creates Scholarship | Donor defines eligibility & deposits funds | 👛 Wallet |
+| 2 | Three-Way Verification | Student, school & fee master confirm amount | ✅ Checkmark |
+| 3 | Instant Disbursement | OTP approval sends money instantly | ⚡ Lightning |
+
+---
+
+## Workflow Preview
+
+```text
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│ 1. Donor    │ ──→ │ 2. Three-   │ ──→ │ 3. Instant  │
+│ Creates     │     │ Way         │     │ Disbursement│
+│ Scholarship │     │ Verification│     │             │
+└─────────────┘     └─────────────┘     └─────────────┘
+```
+
+---
+
+# 👥 Section 6: Who It Is For
+
+Three cards targeting each user type.
+
+---
+
+## User Cards
+
+| Card | Description | Button |
+|---|---|---|
+| 🎁 For Donors | Create scholarships & track impact | Donor Login |
+| 🏫 For Schools | Publish fee master & get paid instantly | School Login |
+| 👨‍🎓 For Students | Apply for scholarships & approve via OTP | Student Login |
+
+---
+
+## Cards Preview
+
+```text
+┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+│ FOR DONORS  │ │ FOR SCHOOLS │ │FOR STUDENTS │
+│ [ Login ]   │ │ [ Login ]   │ │ [ Login ]   │
+└─────────────┘ └─────────────┘ └─────────────┘
+```
+
+---
+
+# ✨ Section 7: Key Features
+
+A responsive feature grid.
+
+---
+
+## Features Table
+
+| Feature | Description |
+|---|---|
+| Three-Way Verification | All parties must match |
+| Auto-Balance Calculation | Automated balance formula |
+| Free for Schools & Students | No hidden charges |
+| 1% Success Fee | Paid only on successful disbursement |
+| SMS OTP Approval | No smartphone required |
+| Real-Time Dashboard | Live tracking of disbursements |
+| M-Pesa Compatible | Integrated with mobile money |
+| Blockchain Secured | Transparent public verification |
+
+---
+
+## Features Preview
+
+```text
+[3-Way Verify] [Auto Balance] [Free] [1% Fee]
+[SMS OTP] [Dashboard] [M-Pesa] [Blockchain]
+```
+
+---
+
+# 💸 Section 8: Cost Transparency Example
+
+Shows donors exactly how fees are calculated.
+
+---
+
+## Example Breakdown
+
+```text
+Deposit:                $10,000
+Conversion Fee:         $15
+Gas Fee:                $2
+USDT Locked:            $9,983
+
+When Disbursed:
+- Platform Fee:         1%
+- Conversion to KSH:    1%
+- Withdrawal Fee:       100 KSH
+
+School Receives:
+53,800 KSH
+```
+
+---
+
+## Transparency Footnote
+
+```text
+All costs shown before you deposit.
+No surprises.
+```
+
+---
+
+# 💬 Section 9: Testimonials
+
+Quotes from donors, schools, and students.
+
+---
+
+## Testimonials
+
+### 🏢 Donor
+
+> "We've reduced our bursary leakage from 25% to 0%. Every shilling is accounted for."
+
+— Safaricom Foundation
+
+---
+
+### 🏫 School
+
+> "The auto-balance feature saved our finance team hours of manual calculation."
+
+— University Finance Office
+
+---
+
+### 👨‍🎓 Student
+
+> "I got notified of a scholarship, applied, and received funding within a week."
+
+— Student Beneficiary
+
+---
+
+# ❓ Section 10: FAQ Section
+
+Accordion-style expandable questions.
+
+---
+
+## FAQ Examples
+
+### ▼ Is BursaryHub free for schools and students?
+
+Yes. Schools and students pay nothing.
+
+---
+
+### ▼ How does three-way verification work?
+
+Student + School + Fee Master must all match.
+
+---
+
+### ▼ What if amounts don't match?
+
+The system blocks payment until resolved.
+
+---
+
+### ▼ Do students need smartphones?
+
+No. SMS OTP works on any phone.
+
+---
+
+### ▼ How long does disbursement take?
+
+Less than 60 seconds after approval.
+
+---
+
+### ▼ Is BursaryHub compliant?
+
+Yes. Includes KYC, AML & school verification.
+
+---
+
+# 📢 Section 11: Call to Action
+
+The final conversion section before the footer.
+
+---
+
+## CTA Elements
+
+| Element | What It Shows |
+|---|---|
+| Headline | Ready to eliminate bursary fraud? |
+| Subheadline | Join trusted donors, schools & students |
+| Primary Button | Get Started as a Donor |
+| Secondary Button | Register Your School |
+
+---
+
+## CTA Preview
+
+```text
+┌──────────────────────────────────────────────────────────┐
+│ Ready to eliminate bursary fraud?                       │
+│                                                          │
+│ Join donors, schools, and students who trust            │
+│ BursaryHub.                                             │
+│                                                          │
+│ [ Get Started as a Donor ]                              │
+│ [ Register Your School ]                                │
+└──────────────────────────────────────────────────────────┘
+```
+
+---
+
+# 📄 Section 12: Footer
+
+Contains navigation, legal, and social links.
+
+---
+
+## Footer Columns
+
+| Column | Links |
+|---|---|
+| Product | How It Works, Pricing, Donors, Schools |
+| Company | About Us, Blog, Contact |
+| Legal | Privacy Policy, Terms, AML/KYC |
+| Social | Twitter, LinkedIn, Email |
+
+---
+
+## Footer Preview
+
+```text
+┌──────────────────────────────────────────────────────────┐
+│ Product │ Company │ Legal │ Social                     │
+│                                                          │
+│ © 2026 BursaryHub. All rights reserved.                 │
+└──────────────────────────────────────────────────────────┘
+```
+
+---
+
+# 🖥️ Visual Hierarchy (Full Page Layout)
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ [BURSARYHUB] [Login ▼] [Sign Up ▼] [☰]                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ HERO SECTION                                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ TRUST BADGES                                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ THE PROBLEM                                                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ HOW IT WORKS                                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ WHO IT IS FOR                                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ KEY FEATURES                                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ COST TRANSPARENCY                                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ TESTIMONIALS                                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ FAQ                                                                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ CALL TO ACTION                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ FOOTER                                                                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# 📱 Mobile Responsive Behavior
+
+| Screen Size | Behavior |
+|---|---|
+| Desktop (>1024px) | Full layout with 3-column features |
+| Tablet (768–1024px) | 2-column feature grid |
+| Mobile (<768px) | Stacked layout with hamburger menu |
+
+---
+
+# ✅ Summary of Landing Page Actions
+
+| Action | Where It Happens |
+|---|---|
+| Login as donor | Navigation → Login |
+| Login as school | Navigation → Login |
+| Login as student | Navigation → Login |
+| Sign up as donor | Navigation → Sign Up |
+| Sign up as school | Navigation → Sign Up |
+| Sign up as student | Navigation → Sign Up |
+| Learn how it works | Hero → Learn How It Works |
+| View FAQ | FAQ Section |
+| Contact via social | Footer |
+| View legal policies | Footer |
+
+---
+
+# 🎯 Core Landing Page Goal
+
+The landing page is designed to:
+
+- Build trust
+- Explain the system quickly
+- Convert visitors into users
+- Reduce confusion
+- Demonstrate transparency
+- Showcase fraud prevention
+- Drive donor onboarding
+
+---
+
+
+
+======================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ===========================================================================================
 
