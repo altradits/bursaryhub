@@ -1,4 +1,632 @@
 
+===========================================================================================
+
+SCHOOL
+
+
+=========================================================================================
+
+# School Dashboard — Complete Feature Outline
+
+## Dashboard Layout Overview
+
+The school dashboard is designed for:
+
+- 💻 Desktop computers
+- 📱 Tablets
+- 🧾 Administrative workflows
+- 📊 Large-scale student management
+
+Information is organized into **expandable panels** allowing school administrators to:
+
+- Manage fee structures
+- Verify student balances
+- Create payment claims
+- Track disbursements
+- Manage school banking details
+- Monitor scholarship activity
+
+---
+
+# 🏫 Section 1: Header
+
+Displayed at the top of the dashboard.
+
+---
+
+## Header Elements
+
+| Element | What It Shows |
+|---|---|
+| 🏫 School Name | Institution name |
+| 🆔 Registration Number | Ministry of Education registration number |
+| ✅ Whitelist Status | Verified or Pending Approval |
+| 🔔 Notification Bell | Alerts & system notifications |
+| 👤 Profile Icon | Account settings & logout |
+
+---
+
+## Example Header
+
+```text
+┌──────────────────────────────────────────────────────────┐
+│ BURSARYHUB | SCHOOL DASHBOARD            [🔔] [▼ Profile]│
+│ University of Nairobi                                 │
+│ Registration: EDU-KE-2026-001                        │
+│ Status: ✅ VERIFIED                                   │
+└──────────────────────────────────────────────────────────┘
+```
+
+---
+
+# 📊 Section 2: Summary Statistics Cards
+
+Four summary cards displaying school-wide metrics.
+
+---
+
+## Statistics Cards
+
+| Card | What It Shows |
+|---|---|
+| 👨‍🎓 Total Students | Total enrolled students |
+| ⏳ Pending Disbursements | Claims awaiting approval |
+| ✅ Completed Disbursements | Total paid to school |
+| 🎓 Active Scholarships | Scholarships matching students |
+
+---
+
+## Example Cards
+
+```text
+┌────────────────────┐
+│ 👨‍🎓 3,450          │
+│ Total Students     │
+└────────────────────┘
+
+┌────────────────────┐
+│ ⏳ 1,280,000 KSH   │
+│ Pending Claims     │
+└────────────────────┘
+
+┌────────────────────┐
+│ ✅ 4,200,000 KSH   │
+│ Completed Payments │
+└────────────────────┘
+
+┌────────────────────┐
+│ 🎓 12              │
+│ Active Scholarships│
+└────────────────────┘
+```
+
+> 🔄 All cards update automatically when system data changes.
+
+---
+
+# 💰 Section 3: Fee Master Management Panel
+
+The primary area for publishing and updating fee structures.
+
+---
+
+# 📚 Fee Structure Controls
+
+## Selectors
+
+| Element | Purpose |
+|---|---|
+| Academic Year Selector | Choose academic period |
+| Course Selector | Choose course/program |
+| Year Selector | Select study year |
+
+---
+
+## Example Selectors
+
+```text
+Academic Year: [2025-2026 ▼]
+Course: [Computer Science ▼]
+Year: [1st Year ▼]
+```
+
+---
+
+# 🧾 Fee Input Fields
+
+| Field | Input Type |
+|---|---|
+| Tuition Amount | Number input |
+| Accommodation Amount | Number input |
+| Food Amount | Number input |
+| Transport Amount | Number input |
+
+---
+
+## Example Fee Inputs
+
+```text
+Tuition:       [55,000]
+Accommodation: [25,000]
+Food:          [15,000]
+Transport:     [5,000]
+```
+
+---
+
+# ⚙️ Fee Master Actions
+
+| Button | What It Does |
+|---|---|
+| Save Fee Master | Publishes fee structure |
+| Bulk Update | Updates many students |
+| Upload CSV | Imports spreadsheet data |
+
+---
+
+## Example Buttons
+
+```text
+[ BULK UPDATE ]
+[ UPLOAD CSV ]
+[ SAVE FEE MASTER ]
+```
+
+---
+
+## Success Message
+
+```text
+✅ Fee master saved.
+47 students affected.
+```
+
+---
+
+# 🔄 Section 4: Auto-Balance Preview Table
+
+Appears when fee changes are previewed before applying.
+
+---
+
+# 📐 Auto-Balance Formula
+
+The system automatically calculates:
+
+```text
+New Balance =
+Previous Unpaid + (New Fee - Paid to Date)
+```
+
+---
+
+# 📊 Preview Table Structure
+
+| Column | What It Shows |
+|---|---|
+| Student Name | Full student name |
+| Registration Number | School registration ID |
+| Old Balance | Existing balance |
+| Paid to Date | Amount already paid |
+| Previous Unpaid | Carried-over balance |
+| New Balance (Auto) | Newly calculated balance |
+
+---
+
+## Example Preview Table
+
+| Student | Old Balance | Paid | Previous Unpaid | New Balance |
+|---|---|---|---|---|
+| John Doe | 50,000 | 0 | 0 | 55,000 |
+| Mary Smith | 30,000 | 20,000 | 0 | 35,000 |
+| Peter Kim | 50,000 | 50,000 | 0 | 0 |
+| Ann Mwangi | 50,000 | 40,000 | 10,000 | 20,000 |
+
+---
+
+# 🔘 Preview Actions
+
+```text
+[ APPLY TO ALL STUDENTS ]
+[ CANCEL ]
+```
+
+---
+
+# 👨‍🎓 Section 5: Student Balance Management Table
+
+A searchable and filterable student balance table.
+
+---
+
+# 📋 Table Structure
+
+| Column | What It Shows |
+|---|---|
+| Student Name | Full name |
+| Reg Number | Registration number |
+| Course | Course/program |
+| Year | Study year |
+| Tuition Balance | Remaining tuition |
+| Accommodation Balance | Remaining accommodation |
+| Food Balance | Remaining food fees |
+| Transport Balance | Remaining transport fees |
+| Total Balance | Combined total |
+| Action Button | Edit |
+
+---
+
+## Example Table
+
+| Name | Reg No | Course | Year | Tuition | Total | Action |
+|---|---|---|---|---|---|---|
+| John Doe | CS001 | CS | 1 | 55,000 | 55K | Edit |
+
+---
+
+# 🔍 Table Controls
+
+| Control | What It Does |
+|---|---|
+| Search Box | Filter by name or reg number |
+| Course Filter | Filter by course |
+| Year Filter | Filter by study year |
+| Export CSV | Download current table |
+
+---
+
+## Controls Preview
+
+```text
+[ Search Student ]
+[ Course ▼ ]
+[ Year ▼ ]
+[ EXPORT CSV ]
+```
+
+---
+
+# ✏️ Edit Student Modal
+
+Opened when clicking **Edit** on a student row.
+
+---
+
+## Modal Fields
+
+| Element | Purpose |
+|---|---|
+| Student Name | Display only |
+| Coverage Type Selector | Choose fee category |
+| New Balance Field | Set updated balance |
+| Reason Field | Explain adjustment |
+| Save Button | Apply update |
+| Cancel Button | Close modal |
+
+---
+
+## Example Modal
+
+```text
+Student: John Doe
+
+Coverage Type: [Tuition ▼]
+
+New Balance: [35,000]
+
+Reason:
+[Partial payment of 20,000 received]
+
+[ SAVE ]
+[ CANCEL ]
+```
+
+---
+
+# ✅ Section 6: Three-Way Verification Panel
+
+Used by the school to submit their side of payment verification.
+
+---
+
+# 🔍 Verification Workflow
+
+The system compares:
+
+1. Student-submitted amount
+2. School-submitted amount
+3. Fee master amount
+
+All three must match.
+
+---
+
+## Verification Controls
+
+| Element | Purpose |
+|---|---|
+| Student Search Box | Find student |
+| Load Student Button | Load student details |
+| Key in Amount | Enter invoice amount |
+| Upload Invoice | Upload supporting document |
+| Submit Verification | Start verification |
+
+---
+
+## Example Verification Panel
+
+```text
+Student ID: [CS001/2024] [LOAD]
+
+Key in Amount: [55,000] KSH
+
+Upload Invoice:
+[ Choose File ] invoice_john_doe.pdf
+
+Status:
+✅ Verification passed.
+Ready for student OTP approval.
+
+[ SUBMIT VERIFICATION ]
+```
+
+---
+
+# 🚦 Verification Status Messages
+
+| Message | Meaning |
+|---|---|
+| Waiting for student | Student has not submitted balance |
+| Student mismatch | Student amount differs |
+| Fee master mismatch | Amount differs from fee structure |
+| ✅ Verification passed | All records match |
+
+---
+
+# 💳 Section 7: Digital Payment Claims Table
+
+Displays all payment claims and their statuses.
+
+---
+
+# 📋 Claims Table Structure
+
+| Column | What It Shows |
+|---|---|
+| Date Created | Claim creation date |
+| Student Name | Student full name |
+| Coverage Type | Tuition, Food, etc. |
+| Amount (KSH) | Claim amount |
+| Student Signed | OTP approval status |
+| Three-Way Match | Verification status |
+| Status | Current workflow state |
+| Action Button | View or Cancel |
+
+---
+
+## Example Claims Table
+
+| Student | Coverage | Amount | Student Signed | 3-Way | Status |
+|---|---|---|---|---|---|
+| John Doe | Tuition | 55,000 | ✅ OTP Verified | ✅ | Completed |
+| Mary Smith | Tuition | 35,000 | ⏳ Pending | ✅ | Ready |
+
+---
+
+# ➕ Create New Claim Modal
+
+Opened using:
+
+```text
+[ + NEW CLAIM ]
+```
+
+---
+
+## Create Claim Fields
+
+| Field | Purpose |
+|---|---|
+| Student Search | Find student |
+| Coverage Type | Select fee category |
+| Amount | Auto-filled from fee master |
+| Create Claim Button | Generate claim |
+
+---
+
+## Example Modal
+
+```text
+Student Search:
+[ John Doe ]
+
+Coverage:
+[ Tuition ▼ ]
+
+Amount:
+[55,000]
+
+[ CREATE CLAIM ]
+```
+
+---
+
+# 💸 Section 8: Recent Disbursements Table
+
+Displays completed school payments.
+
+---
+
+# 📋 Disbursement Table Structure
+
+| Column | What It Shows |
+|---|---|
+| Date | Completion date |
+| Student Name | Funded student |
+| Amount (KSH) | Amount paid |
+| Transaction Hash | Blockchain reference |
+| Status | Completed or Failed |
+
+---
+
+## Example Disbursements
+
+| Date | Student | Amount | Transaction Hash | Status |
+|---|---|---|---|---|
+| May 28 | John Doe | 55,000 | 0xabc...123 | ✅ Completed |
+
+---
+
+## Navigation
+
+```text
+[ VIEW ALL ]
+```
+
+---
+
+# 🏦 Section 9: Bank Account Settings Panel
+
+Used for managing school banking details.
+
+---
+
+# 🧾 Bank Fields
+
+| Field | Purpose |
+|---|---|
+| Bank Name | Financial institution |
+| Account Name | Registered account name |
+| Account Number | Bank account number |
+| Bank Code | Bank routing code |
+
+---
+
+## Example Settings
+
+```text
+Bank Name:      [ Equity Bank ]
+Account Name:  [ UoN Fees ]
+Account Number:[ 0123456789 ]
+Bank Code:     [ 068 ]
+```
+
+---
+
+# ⚙️ Bank Actions
+
+```text
+[ SAVE ]
+[ TEST TRANSFER ]
+```
+
+---
+
+## Test Transfer Purpose
+
+The system sends:
+
+```text
+1 KSH test transfer
+```
+
+To verify account details before real disbursements.
+
+---
+
+# 🖥️ Full Visual Hierarchy
+
+```text
+┌────────────────────────────────────────────────────────────────────────────┐
+│ BURSARYHUB | SCHOOL DASHBOARD                         [🔔] [Profile ▼]    │
+├────────────────────────────────────────────────────────────────────────────┤
+│                                                                            │
+│ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐                       │
+│ │ 3,450    │ │1,280,000 │ │4,200,000 │ │ 12       │                       │
+│ │Students  │ │Pending   │ │Completed │ │Active    │                       │
+│ └──────────┘ └──────────┘ └──────────┘ └──────────┘                       │
+│                                                                            │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ FEE MASTER MANAGEMENT                                       [PUBLISH] │ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                            │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ AUTO-BALANCE PREVIEW                                        [PREVIEW]│ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                            │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ STUDENT BALANCES                                         [SEARCH][CSV]│ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                            │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ THREE-WAY VERIFICATION                                                │ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                            │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ DIGITAL PAYMENT CLAIMS                                     [+ NEW]    │ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                            │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ RECENT DISBURSEMENTS                                     [VIEW ALL]   │ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                            │
+│ ┌────────────────────────────────────────────────────────────────────────┐ │
+│ │ BANK ACCOUNT SETTINGS                                      [SAVE]     │ │
+│ └────────────────────────────────────────────────────────────────────────┘ │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# ✅ Summary of All School Actions
+
+| Action | Where It Happens |
+|---|---|
+| Publish fee master | Fee Master Management |
+| Bulk update fees | Bulk Update button |
+| Preview balance changes | Auto-Balance Preview |
+| Apply fee changes | Apply to All Students |
+| Search students | Student Balance Table |
+| Edit balances | Edit Student Modal |
+| Submit verification | Three-Way Verification |
+| Create claims | Digital Claims Panel |
+| Track disbursements | Recent Disbursements |
+| Update bank account | Bank Settings |
+| Test bank details | Test Transfer |
+| Export student data | Export CSV |
+
+---
+
+# 🎯 Core Dashboard Purpose
+
+The school dashboard enables institutions to:
+
+- Manage academic fee structures
+- Maintain student balances
+- Verify funding claims
+- Coordinate secure disbursements
+- Track scholarship funding
+- Manage banking workflows
+- Export operational records
+- Ensure transparent financial verification
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Student Dashboard — Complete Feature Outline
 
 =======================================================================================
