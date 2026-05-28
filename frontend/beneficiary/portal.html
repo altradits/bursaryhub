@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Beneficiary Handshake Module | BursaryFund</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        body { background-color: #e2e8f0; }
+        .pwa-frame {
+            max-width: 450px;
+            margin: 0 auto;
+            background: var(--ifc-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            padding: 1.5rem;
+            box-shadow: 0 0 25px rgba(0,0,0,0.1);
+        }
+        .wallet-card {
+            background: linear-gradient(135deg, #002f6c 0%, #0f172a 100%);
+            color: white;
+            padding: 1.75rem;
+            border-radius: var(--radius);
+        }
+        .wallet-card h3 { font-size: 2.25rem; font-weight: 800; margin-top: 0.25rem; font-variant-numeric: tabular-nums; }
+        
+        .verification-queue-item {
+            background: white;
+            border: 1px solid var(--glass-border);
+            padding: 1.25rem;
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Glassmorphic Verification Overlay Modal System */
+        .modal-blur-screen {
+            position: fixed;
+            top:0; left:0; right:0; bottom:0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 2000;
+            opacity: 0; pointer-events: none;
+            transition: var(--transition);
+        }
+        .modal-blur-screen.active-window { opacity: 1; pointer-events: auto; }
+        .modal-shell { background: white; border-radius: var(--radius); padding: 2.5rem 2rem; max-width: 380px; width: 100%; text-align: center; border: 1px solid var(--glass-border); }
+
+        .pwa-success-state { text-align: center; padding: 4rem 1rem; }
+        .pwa-success-state .icon-seal { font-size: 4.5rem; color: var(--success); margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body>
+
+    <div id="pwaInterfaceContainer" class="pwa-frame">
+        <header style="display:flex; justify-content:between; align-items:center; border-bottom:1px solid var(--glass-border); padding-bottom:0.75rem;">
+            <span style="font-weight:800; color:var(--ifc-blue); font-size:1.1rem;">BursaryFund Mobile Gateway [cite: 29]</span>
+            <a href="../home.html" style="font-size:0.75rem; background:#cbd5e1; padding:0.25rem 0.6rem; border-radius:20px; text-decoration:none; color:var(--ifc-dark); font-weight:700;">Disconnect Node</a>
+        </header>
+
+        <div class="wallet-card">
+            <span style="font-size:0.8rem; text-transform:uppercase; font-weight:700; opacity:0.85; letter-spacing:0.04em;">Sub-Allocation Credit Target [cite: 59]</span>
+            <h3 id="currentBalanceDisplay">50,000 KES</h3>
+        </div>
+
+        <div>
+            <h4 style="font-size:0.8rem; text-transform:uppercase; color:#64748b; letter-spacing:0.05em; font-weight:800; margin-bottom:0.5rem;">Pending Billing Handshakes [cite: 65]</h4>
+            <div id="queueStack">
+                <div class="verification-queue-item" id="claimInstance_1">
+                    <div>
+                        <h4 style="color:var(--ifc-blue); font-weight:800; font-size:1.05rem;">Technical University Ledger [cite: 27]</h4>
+                        <p style="font-size:0.8rem; color:#64748b; margin-top:0.15rem;">Course Mapping: COMP-SCI-Y1 • Invoiced Balance [cite: 9, 63]</p>
+                        <p style="font-size:1.35rem; font-weight:800; color:var(--ifc-dark); margin-top:0.5rem;">50,000 KES</p>
+                    </div>
+                    <button class="btn btn-primary" id="triggerPayoutVerificationBtn" style="font-size:0.85rem; padding:0.65rem 1.25rem;">Approve Payout Handshake [cite: 66]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="otpSignatureModal" class="modal-blur-screen">
+        <div class="modal-shell">
+            <span style="font-size: 2.5rem;">⚙️</span>
+            <h3 style="color: var(--ifc-blue); margin-top: 0.5rem; font-weight:800;">Co-Sign Settlement [cite: 66]</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.25rem; line-height:1.4;">Provide the 6-digit cryptographic signature code dispatched via SMS registry mapping[cite: 28, 34].</p>
+            
+            <div style="margin: 1.75rem 0;">
+                <input type="text" id="otpInputCode" maxlength="6" class="form-input" style="text-align:center; font-size:2rem; font-weight:800; letter-spacing:0.35rem;" placeholder="000000" autocomplete="one-time-code">
+            </div>
+
+            <button id="executeSignatureBtn" class="btn btn-primary" style="width:100%;">Authorize Escrow Clearance [cite: 69]</button>
+            <button id="cancelModalBtn" class="btn" style="background:none; color:#64748b; font-size:0.85rem; text-transform:none; margin-top:0.5rem;">Abandon Execution Signature</button>
+            <div id="otpFormFeedback" class="feedback-msg"></div>
+        </div>
+    </div>
+
+    <script src="portal.js"></script>
+</body>
+</html>
