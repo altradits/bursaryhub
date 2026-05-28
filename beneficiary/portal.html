@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Beneficiary Handshake Module | BursaryFund</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    <div id="pwaInterfaceContainer" class="max-w-md mx-auto bg-white min-h-screen shadow-lg">
+        <header class="flex justify-between items-center p-4 border-b border-gray-200">
+            <span class="font-extrabold text-lg text-cyan-500">BursaryFund Mobile Gateway [cite: 29]</span>
+            <a href="../home.html" class="text-xs bg-gray-200 text-gray-800 font-bold py-1 px-3 rounded-full">Disconnect Node</a>
+        </header>
+
+        <div class="p-4 space-y-6">
+            <div class="bg-gradient-to-br from-cyan-600 to-blue-800 text-white p-6 rounded-xl">
+                <p class="text-sm font-bold uppercase tracking-wider opacity-80">Sub-Allocation Credit Target [cite: 59]</p>
+                <h3 id="currentBalanceDisplay" class="text-4xl font-extrabold tracking-tight">50,000 KES</h3>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-2">Pending Billing Handshakes [cite: 65]</h4>
+                <div id="queueStack" class="space-y-4">
+                    <div class="bg-white border border-gray-200 p-4 rounded-lg" id="claimInstance_1">
+                        <div>
+                            <h4 class="font-bold text-cyan-600 text-lg">Technical University Ledger [cite: 27]</h4>
+                            <p class="text-sm text-gray-500 mt-1">Course Mapping: COMP-SCI-Y1 • Invoiced Balance [cite: 9, 63]</p>
+                            <p class="text-2xl font-extrabold text-gray-800 mt-2">50,000 KES</p>
+                        </div>
+                        <button class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg mt-4 text-sm" id="triggerPayoutVerificationBtn">Approve Payout Handshake [cite: 66]</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="otpSignatureModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-lg p-8 max-w-sm w-full text-center">
+            <span class="text-5xl">⚙️</span>
+            <h3 class="text-2xl font-extrabold text-cyan-600 mt-4">Co-Sign Settlement [cite: 66]</h3>
+            <p class="text-sm text-gray-600 mt-2">Provide the 6-digit cryptographic signature code dispatched via SMS registry mapping[cite: 28, 34].</p>
+            
+            <div class="my-6">
+                <input type="text" id="otpInputCode" maxlength="6" class="w-full text-center text-4xl font-extrabold tracking-widest bg-gray-100 border-gray-300 rounded-lg" placeholder="000000" autocomplete="one-time-code">
+            </div>
+
+            <button id="executeSignatureBtn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 rounded-lg">Authorize Escrow Clearance [cite: 69]</button>
+            <button id="cancelModalBtn" class="text-sm text-gray-500 hover:text-cyan-500 mt-4">Abandon Execution Signature</button>
+            <div id="otpFormFeedback"></div>
+        </div>
+    </div>
+
+    <script src="portal.js"></script>
+</body>
+</html>

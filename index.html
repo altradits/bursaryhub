@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gateway Authentication Portal | BursaryFund</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <nav class="bg-gray-800 p-4">
+        <div class="container mx-auto">
+            <a href="home.html" class="text-cyan-400">&larr; Return to Overview Profile</a>
+        </div>
+    </nav>
+
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-gray-800 p-8 rounded-lg shadow-lg max-w-md w-full">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-extrabold text-cyan-400">System Identity Access</h2>
+                <p class="text-gray-400">Specify your node context parameters below to complete verification[cite: 20].</p>
+            </div>
+
+            <div id="roleSelectionScreen">
+                <div class="space-y-4">
+                    <button class="w-full text-left bg-gray-700 p-4 rounded-lg flex items-center space-x-4 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-500" data-role="grantor">
+                        <span class="text-3xl">🏛️</span>
+                        <div>
+                            <h4 class="font-bold text-lg text-cyan-400">Grantor Identity Control</h4>
+                            <p class="text-sm text-gray-400">Manage funding pools, map student rosters, and run real-time audit logs[cite: 18, 58].</p>
+                        </div>
+                    </button>
+                    <button class="w-full text-left bg-gray-700 p-4 rounded-lg flex items-center space-x-4 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-500" data-role="beneficiary">
+                        <span class="text-3xl">📱</span>
+                        <div>
+                            <h4 class="font-bold text-lg text-cyan-400">Beneficiary Student Interface</h4>
+                            <p class="text-sm text-gray-400">Check allocation status, trace parameters, and co-sign dynamic claims via SMS[cite: 28, 66].</p>
+                        </div>
+                    </button>
+                    <button class="w-full text-left bg-gray-700 p-4 rounded-lg flex items-center space-x-4 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-500" data-role="institution">
+                        <span class="text-3xl">🏫</span>
+                        <div>
+                            <h4 class="font-bold text-lg text-cyan-400">Institution Ledger Node</h4>
+                            <p class="text-sm text-gray-400">Publish Fee Masters, authenticate registration parameters, and issue payment claims[cite: 8, 63].</p>
+                        </div>
+                    </button>
+                </div>
+                <button id="proceedToAuthBtn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg mt-8" disabled>Proceed to Access Form</button>
+            </div>
+
+            <div id="credentialAuthScreen" class="hidden">
+                <div class="flex border-b border-gray-700 mb-6">
+                    <button class="flex-1 py-2 text-sm font-bold uppercase tracking-wider focus:outline-none active" id="tabLogin" data-mode="login">Authorized Log In</button>
+                    <button class="flex-1 py-2 text-sm font-bold uppercase tracking-wider text-gray-500 focus:outline-none" id="tabSignUp" data-mode="signup">System Enrollment</button>
+                </div>
+
+                <form id="identityForm" novalidate>
+                    <div id="formFieldsContainer"></div>
+                    <button type="submit" id="authSubmitBtn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg">Execute Access Request</button>
+                </form>
+                <button id="resetNodeViewBtn" class="text-sm text-gray-400 hover:text-cyan-400 mt-4 text-center w-full">Alter Selected Identity Class</button>
+                <div id="authFeedback"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/auth.js"></script>
+</body>
+</html>
