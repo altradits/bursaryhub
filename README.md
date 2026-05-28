@@ -1,4 +1,455 @@
 
+# Student Dashboard — Complete Feature Outline
+
+=======================================================================================
+
+## Dashboard Layout Overview
+
+The student dashboard is designed primarily for **mobile phones**.
+
+### Core Design Principles
+
+- 📱 Mobile-first layout
+- 🔽 Vertical scrolling sections
+- 🔤 Large readable text
+- 👆 Easy-to-tap buttons
+- 🌐 Optimized for slow internet connections
+
+---
+
+# 👤 Section 1: Header
+
+Displayed at the very top of the dashboard.
+
+---
+
+## Header Elements
+
+| Element | What It Shows |
+|---|---|
+| 👤 Student Name | Full student name |
+| 🏫 School Name | Institution name |
+| 🔔 Notification Badge | Number of unread alerts |
+| ☰ Menu Icon | Opens profile settings & logout |
+
+---
+
+## Example Header
+
+```text
+┌──────────────────────────────────────┐
+│ BursaryHub                    [☰]   │
+│ John Doe                            │
+│ University of Nairobi               │
+│                           [3 NEW] ● │
+└──────────────────────────────────────┘
+```
+
+---
+
+# 🎓 Section 2: Available Scholarships Card
+
+A highlighted card shown only when scholarships match the student profile.
+
+---
+
+## Scholarship Card Layout
+
+```text
+┌──────────────────────────────────────┐
+│ 🎓 NEW SCHOLARSHIP AVAILABLE         │
+│                                      │
+│ Tech Scholars 2024                   │
+│ Covers Tuition up to 55,000 KSH      │
+│ Apply by June 30, 2026               │
+│                                      │
+│                    [ APPLY NOW ]     │
+└──────────────────────────────────────┘
+```
+
+---
+
+## Card Elements
+
+| Element | What It Shows |
+|---|---|
+| Title | "New Scholarship Available for You" |
+| Scholarship Name | Example: Tech Scholars 2024 |
+| Coverage | Example: Tuition up to 55,000 KSH |
+| Deadline | Application deadline |
+| Apply Button | Green "Apply Now" button |
+
+> ⚠️ If no scholarships match the student profile, this section is hidden.
+
+---
+
+# 📋 Section 3: My Applications
+
+Displays all scholarships the student has applied for.
+
+---
+
+## Table Structure
+
+| Column | What It Shows |
+|---|---|
+| Scholarship Name | Scholarship title |
+| Status | Pending, Approved, Rejected, or Funded |
+| Amount | Maximum approved amount |
+
+---
+
+## Example Applications
+
+| Scholarship | Status | Funded Amount |
+|---|---|---|
+| Tech Scholars 2024 | ✅ Approved | 55,000 KSH |
+| Girls in STEM | ⏳ Pending | — |
+
+---
+
+# ✅ Section 4: Step 1 — Confirm Your Balance
+
+This section is always visible.
+
+The student submits their side of the **three-way verification process**.
+
+---
+
+# 🧾 Verification Process
+
+The system compares:
+
+1. Student-submitted balance
+2. School-submitted balance
+3. Fee master records
+
+All three must match before payment approval.
+
+---
+
+## Form Elements
+
+| Element | What It Does |
+|---|---|
+| Current Fee Owed | Student enters amount in KSH |
+| Upload Fee Statement | Upload photo or PDF |
+| Submit Button | Sends balance for verification |
+
+---
+
+## Form Preview
+
+```text
+┌──────────────────────────────────────┐
+│ Current fee owed: [55,000] KSH       │
+│                                      │
+│ Fee statement: [Choose File]         │
+│                                      │
+│              [ SUBMIT MY BALANCE ]   │
+└──────────────────────────────────────┘
+```
+
+---
+
+# 🔍 Verification Status Box
+
+Appears after submission.
+
+---
+
+## Success Example
+
+```text
+┌──────────────────────────────────────┐
+│ ✓ You entered: 55,000 KSH            │
+│ ✓ School says: 55,000 KSH            │
+│ ✓ Fee master says: 55,000 KSH        │
+│                                      │
+│ ✅ MATCHED! Ready for approval       │
+└──────────────────────────────────────┘
+```
+
+---
+
+## Waiting Example
+
+```text
+⏳ Waiting for school verification
+```
+
+---
+
+## Mismatch Example
+
+```text
+❌ MISMATCH:
+Your amount does not match school records.
+Contact your school admin.
+```
+
+---
+
+## Important Rule
+
+> 🚫 The student cannot continue to Step 2 until verification status becomes **MATCHED**.
+
+---
+
+# 🔐 Section 5: Step 2 — Approve Payment
+
+Appears only after:
+
+- Three-way verification succeeds
+- School creates a payment claim
+
+---
+
+## Payment Approval Elements
+
+| Element | What It Shows |
+|---|---|
+| School Name | Institution requesting payment |
+| Amount | Verified KSH amount |
+| Coverage Type | Tuition, accommodation, etc. |
+| Request OTP Button | Sends SMS verification code |
+| OTP Input Field | Student enters received code |
+| Verify & Approve Button | Confirms payment approval |
+
+---
+
+## Payment Approval Preview
+
+```text
+┌──────────────────────────────────────┐
+│ School: University of Nairobi        │
+│ Amount: 55,000 KSH                   │
+│ Coverage: Tuition - Year 1 CS        │
+│                                      │
+│                [ REQUEST OTP ]       │
+│                                      │
+│ OTP: [•][•][•][•][•][•]             │
+│                                      │
+│          [ VERIFY & APPROVE ]        │
+└──────────────────────────────────────┘
+```
+
+---
+
+# 📲 OTP Verification Flow
+
+## When Student Clicks "Request OTP"
+
+The system:
+
+- Sends SMS code
+- Activates OTP fields
+- Starts countdown timer
+
+---
+
+## Example SMS
+
+```text
+Your BursaryHub verification code is 123456
+```
+
+---
+
+## Timer Example
+
+```text
+Code expires in 5:00
+```
+
+---
+
+# ✅ OTP Verification Outcomes
+
+## Successful Approval
+
+```text
+✅ Payment approved!
+Funds will be sent to the school.
+```
+
+---
+
+## Invalid OTP
+
+```text
+❌ Invalid code.
+Request a new OTP.
+```
+
+---
+
+## Completed Payment Status
+
+```text
+✅ Payment completed on May 28, 2026
+```
+
+---
+
+# 💸 Section 6: Payment History
+
+Displays previous payments made on behalf of the student.
+
+---
+
+## Payment History Structure
+
+| Column | What It Shows |
+|---|---|
+| Date | Payment completion date |
+| Coverage | Tuition, Food, Accommodation, etc. |
+| Amount | Amount paid in KSH |
+| Status | Completed or Failed |
+
+---
+
+## Example Payment History
+
+| Date | Coverage | Amount | Status |
+|---|---|---|---|
+| May 28, 2026 | Tuition | 55,000 KSH | ✅ Completed |
+| Jan 15, 2026 | Tuition | 50,000 KSH | ✅ Completed |
+
+---
+
+## Additional Navigation
+
+```text
+[ VIEW ALL ]
+```
+
+Opens the full payment history page.
+
+---
+
+# 🆘 Section 7: Help & Support
+
+Located at the bottom of the dashboard.
+
+---
+
+## Support Elements
+
+| Element | What It Does |
+|---|---|
+| Contact Support | Opens support form |
+| FAQ | Opens help articles |
+| Version Number | Shows platform version |
+
+---
+
+## Support Preview
+
+```text
+[ Contact Support ]   [ FAQ ]   v1.0
+```
+
+---
+
+# 📱 Mobile Visual Hierarchy
+
+```text
+┌─────────────────────────────────────────────┐
+│ BursaryHub                          [☰]    │
+│ John Doe                                    │
+│ University of Nairobi                       │
+│                                   [3 NEW] ● │
+├─────────────────────────────────────────────┤
+│                                             │
+│ ┌─────────────────────────────────────────┐ │
+│ │ 🎓 NEW SCHOLARSHIP AVAILABLE            │ │
+│ │ Tech Scholars 2024                      │ │
+│ │ Covers tuition up to 55,000 KSH         │ │
+│ │ Apply by June 30, 2026                  │ │
+│ │                       [ APPLY NOW ]     │ │
+│ └─────────────────────────────────────────┘ │
+│                                             │
+│ MY APPLICATIONS                             │
+│ ┌─────────────────────────────────────────┐ │
+│ │ Tech Scholars 2024 │ Approved │ 55K    │ │
+│ └─────────────────────────────────────────┘ │
+│                                             │
+│ STEP 1: CONFIRM YOUR BALANCE                │
+│ ┌─────────────────────────────────────────┐ │
+│ │ Current fee owed: [55,000] KSH          │ │
+│ │ Fee statement: [Choose File]            │ │
+│ │               [SUBMIT MY BALANCE]       │ │
+│ │ ─────────────────────────────────────── │ │
+│ │ ✓ You entered: 55,000 KSH               │ │
+│ │ ✓ School says: 55,000 KSH               │ │
+│ │ ✓ Fee master says: 55,000 KSH           │ │
+│ │ ✅ MATCHED! Ready for approval          │ │
+│ └─────────────────────────────────────────┘ │
+│                                             │
+│ STEP 2: APPROVE PAYMENT                     │
+│ ┌─────────────────────────────────────────┐ │
+│ │ School: University of Nairobi           │ │
+│ │ Amount: 55,000 KSH                      │ │
+│ │ Coverage: Tuition - Year 1 CS           │ │
+│ │                    [REQUEST OTP]        │ │
+│ │ OTP: [•][•][•][•][•][•]                │ │
+│ │             [VERIFY & APPROVE]          │ │
+│ └─────────────────────────────────────────┘ │
+│                                             │
+│ PAYMENT HISTORY                             │
+│ ┌─────────────────────────────────────────┐ │
+│ │ May 28 │ Tuition │ 55,000 │ Completed  │ │
+│ │ Jan 15 │ Tuition │ 50,000 │ Completed  │ │
+│ │                       [VIEW ALL]        │ │
+│ └─────────────────────────────────────────┘ │
+│                                             │
+│ HELP & SUPPORT                              │
+│ [Contact Support] [FAQ] v1.0               │
+│                                             │
+└─────────────────────────────────────────────┘
+```
+
+---
+
+# ✅ Summary of All Student Actions
+
+| Action | Where It Happens |
+|---|---|
+| Apply for scholarship | Available Scholarships Card |
+| Check application status | My Applications |
+| Enter current balance | Step 1 — Confirm Your Balance |
+| Upload fee statement | Step 1 — File Upload |
+| Submit balance verification | Submit My Balance Button |
+| View verification results | Verification Status Box |
+| Request OTP | Step 2 — Request OTP |
+| Enter OTP | OTP Input Field |
+| Approve payment | Verify & Approve Button |
+| View payment history | Payment History |
+| Get support | Help & Support |
+
+---
+
+# 🎯 Core Dashboard Purpose
+
+The student dashboard enables students to:
+
+- Discover scholarship opportunities
+- Apply for funding
+- Verify school fee balances
+- Approve secure school payments
+- Track funding status
+- Review payment history
+- Access support services
+
+---
+
+
+
+DONOR
+
+
+
 ========================================================================
 Donor Dashboard — Complete Feature Outline
 # Donor Dashboard — Complete Feature Outline
@@ -334,6 +785,18 @@ The donor dashboard enables donors to:
 
 ======================================================================================
 
+
+
+
+
+
+
+
+
+
+
+
+=======================================================================================
 
 
 git add README.md
