@@ -75,7 +75,7 @@ check "POST /donor/scholarships creates scholarship" "scholarship_id\|status" "$
 
 R=$(curl -s $BASE/donor/disbursements \
   -H "Authorization: Bearer $DONOR_TOKEN" 2>/dev/null || echo "{}")
-check "GET /donor/disbursements returns list" "disbursements\|data\|\[\]" "$R"
+check "GET /donor/disbursements returns list" "disbursements\|count" "$R"
 
 R=$(curl -s "$BASE/donor/cost-breakdown?amount=10000&currency=USD" \
   -H "Authorization: Bearer $DONOR_TOKEN" 2>/dev/null || echo "{}")
@@ -122,7 +122,7 @@ export STUDENT_TOKEN=$(echo $R | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
 
 R=$(curl -s $BASE/student/scholarships \
   -H "Authorization: Bearer $STUDENT_TOKEN" 2>/dev/null || echo "{}")
-check "GET /student/scholarships returns available scholarships" "scholarships\|data\|\[\]" "$R"
+check "GET /student/scholarships returns available scholarships" "scholarships\|count" "$R"
 
 R=$(curl -s $BASE/student/balance \
   -H "Authorization: Bearer $STUDENT_TOKEN" 2>/dev/null || echo "{}")
@@ -158,7 +158,7 @@ echo "[ Admin Endpoints ]"
 
 R=$(curl -s $BASE/admin/mismatches \
   -H "Authorization: Bearer $SCHOOL_TOKEN" 2>/dev/null || echo "{}")
-check "GET /admin/mismatches returns mismatch list" "mismatches\|data\|\[\]" "$R"
+check "GET /admin/mismatches returns mismatch list" "mismatches" "$R"
 
 # ── Auth Guard ────────────────────────────────────────────────
 echo ""
