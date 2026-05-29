@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -31,8 +32,13 @@ func main() {
 
 	// Health check
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"status":  "ok",
+			"service": "BursaryHub API",
+			"version": "1.0.0",
+		})
 	}).Methods("GET")
 
 	// Auth routes (no protection)
@@ -77,6 +83,7 @@ func main() {
 	api.HandleFunc("/admin/mismatches", handlers.GetMismatches).Methods("GET")
 	api.HandleFunc("/admin/mismatches/{id}/resolve", handlers.ResolveMismatch).Methods("POST")
 
-	log.Println("Server starting on port 8080...")
+	log.Println("Connected to database successfully")
+	log.Println("Server listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

@@ -1,12 +1,31 @@
 -- ENUM TYPES
-CREATE TYPE user_role AS ENUM ('donor', 'school_admin', 'student', 'admin');
-CREATE TYPE coverage_type AS ENUM ('tuition', 'accommodation', 'food', 'transport', 'all', 'unrestricted');
-CREATE TYPE disbursement_status AS ENUM ('pending', 'verified', 'completed', 'failed', 'blocked');
-CREATE TYPE scholarship_status AS ENUM ('active', 'closed', 'expired');
-CREATE TYPE application_status AS ENUM ('pending', 'approved', 'rejected');
+DO $$ BEGIN
+  CREATE TYPE user_role AS ENUM ('donor', 'school_admin', 'student', 'admin');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE coverage_type AS ENUM ('tuition', 'accommodation', 'food', 'transport', 'all', 'unrestricted');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE disbursement_status AS ENUM ('pending', 'verified', 'completed', 'failed', 'blocked');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE scholarship_status AS ENUM ('active', 'closed', 'expired');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE application_status AS ENUM ('pending', 'approved', 'rejected');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- USERS TABLE
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     phone VARCHAR(20) UNIQUE NOT NULL,
@@ -19,7 +38,7 @@ CREATE TABLE users (
 );
 
 -- DONORS TABLE
-CREATE TABLE donors (
+CREATE TABLE IF NOT EXISTS donors (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     organization_name VARCHAR(255),
@@ -29,7 +48,7 @@ CREATE TABLE donors (
 );
 
 -- SCHOOLS TABLE
-CREATE TABLE schools (
+CREATE TABLE IF NOT EXISTS schools (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     registration_number VARCHAR(100) UNIQUE NOT NULL,
@@ -41,7 +60,7 @@ CREATE TABLE schools (
 );
 
 -- STUDENTS TABLE
-CREATE TABLE students (
+CREATE TABLE IF NOT EXISTS students (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     school_id INTEGER REFERENCES schools(id),
@@ -53,7 +72,7 @@ CREATE TABLE students (
 );
 
 -- FEE MASTER TABLE
-CREATE TABLE fee_master (
+CREATE TABLE IF NOT EXISTS fee_master (
     id SERIAL PRIMARY KEY,
     school_id INTEGER REFERENCES schools(id) ON DELETE CASCADE,
     academic_year VARCHAR(20) NOT NULL,
@@ -67,7 +86,7 @@ CREATE TABLE fee_master (
 );
 
 -- STUDENT BALANCES TABLE
-CREATE TABLE student_balances (
+CREATE TABLE IF NOT EXISTS student_balances (
     id SERIAL PRIMARY KEY,
     student_id INTEGER REFERENCES students(id) ON DELETE CASCADE,
     academic_year VARCHAR(20),
@@ -78,7 +97,7 @@ CREATE TABLE student_balances (
 );
 
 -- SCHOLARSHIPS TABLE
-CREATE TABLE scholarships (
+CREATE TABLE IF NOT EXISTS scholarships (
     id SERIAL PRIMARY KEY,
     donor_id INTEGER REFERENCES donors(id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
@@ -94,7 +113,7 @@ CREATE TABLE scholarships (
 );
 
 -- APPLICATIONS TABLE
-CREATE TABLE applications (
+CREATE TABLE IF NOT EXISTS applications (
     id SERIAL PRIMARY KEY,
     scholarship_id INTEGER REFERENCES scholarships(id),
     student_id INTEGER REFERENCES students(id),
@@ -104,7 +123,7 @@ CREATE TABLE applications (
 );
 
 -- DISBURSEMENTS TABLE
-CREATE TABLE disbursements (
+CREATE TABLE IF NOT EXISTS disbursements (
     id SERIAL PRIMARY KEY,
     scholarship_id INTEGER REFERENCES scholarships(id),
     student_id INTEGER REFERENCES students(id),
@@ -118,7 +137,7 @@ CREATE TABLE disbursements (
 );
 
 -- THREE-WAY VERIFICATION LOGS
-CREATE TABLE three_way_verification (
+CREATE TABLE IF NOT EXISTS three_way_verification (
     id SERIAL PRIMARY KEY,
     disbursement_id INTEGER REFERENCES disbursements(id),
     student_entered_amount DECIMAL(15,2),
@@ -129,7 +148,7 @@ CREATE TABLE three_way_verification (
 );
 
 -- TRANSACTION FEES LOG
-CREATE TABLE transaction_fees (
+CREATE TABLE IF NOT EXISTS transaction_fees (
     id SERIAL PRIMARY KEY,
     disbursement_id INTEGER REFERENCES disbursements(id),
     conversion_in_fee_usd DECIMAL(10,4),
@@ -140,7 +159,7 @@ CREATE TABLE transaction_fees (
 );
 
 -- AUDIT LOGS
-CREATE TABLE audit_logs (
+CREATE TABLE IF NOT EXISTS audit_logs (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
     action VARCHAR(255) NOT NULL,
@@ -150,11 +169,11 @@ CREATE TABLE audit_logs (
 );
 
 -- INDEXES
-CREATE INDEX idx_users_role ON users(role);
-CREATE INDEX idx_users_phone ON users(phone);
-CREATE INDEX idx_students_school_id ON students(school_id);
-CREATE INDEX idx_fee_master_school_year ON fee_master(school_id, academic_year);
-CREATE INDEX idx_disbursements_status ON disbursements(status);
-CREATE INDEX idx_scholarships_donor_id ON scholarships(donor_id);
-CREATE INDEX idx_applications_student_id ON applications(student_id);
-CREATE INDEX idx_applications_scholarship_id ON applications(scholarship_id);
+CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
+CREATE INDEX IF NOT EXISTS idx_users_phone ON users(phone);
+CREATE INDEX IF NOT EXISTS idx_students_school_id ON students(school_id);
+CREATE INDEX IF NOT EXISTS idx_fee_master_school_year ON fee_master(school_id, academic_year);
+CREATE INDEX IF NOT EXISTS idx_disbursements_status ON disbursements(status);
+CREATE INDEX IF NOT EXISTS idx_scholarships_donor_id ON scholarships(donor_id);
+CREATE INDEX IF NOT EXISTS idx_applications_student_id ON applications(student_id);
+CREATE INDEX IF NOT EXISTS idx_applications_scholarship_id ON applications(scholarship_id);

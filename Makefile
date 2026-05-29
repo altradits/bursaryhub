@@ -19,6 +19,10 @@ dev:
 	@echo "🚀 Starting BursaryHub backend on port $(SERVER_PORT)..."
 	go run ./backend/main.go
 
+start:
+	@echo "🚀 Starting BursaryHub backend..."
+	go run ./backend/main.go
+
 build:
 	@echo "🔨 Building binary..."
 	@mkdir -p bin

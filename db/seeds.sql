@@ -1,23 +1,42 @@
+-- Reset all tables in FK-safe order before seeding
+TRUNCATE TABLE
+  audit_logs,
+  transaction_fees,
+  three_way_verification,
+  disbursements,
+  applications,
+  student_balances,
+  scholarships,
+  students,
+  donors,
+  fee_master,
+  schools,
+  users
+RESTART IDENTITY CASCADE;
+
 -- Seed 5 mock Kenyan universities (whitelisted)
 INSERT INTO users (email, phone, national_id, full_name, role, password_hash, is_whitelisted) VALUES
 ('admin@uonbi.ac.ke', '+254700000001', 'UNIV001', 'University of Nairobi Admin', 'school_admin', '$2a$10$hash1', TRUE),
 ('admin@jkuit.ac.ke', '+254700000002', 'UNIV002', 'JKUAT Admin', 'school_admin', '$2a$10$hash2', TRUE),
 ('admin@maseno.ac.ke', '+254700000003', 'UNIV003', 'Maseno University Admin', 'school_admin', '$2a$10$hash3', TRUE),
 ('admin@egerton.ac.ke', '+254700000004', 'UNIV004', 'Egerton University Admin', 'school_admin', '$2a$10$hash4', TRUE),
-('admin@uonbi2.ac.ke', '+254700000005', 'UNIV005', 'Kenyatta University Admin', 'school_admin', '$2a$10$hash5', TRUE);
+('admin@uonbi2.ac.ke', '+254700000005', 'UNIV005', 'Kenyatta University Admin', 'school_admin', '$2a$10$hash5', TRUE)
+ON CONFLICT (email) DO NOTHING;
 
 INSERT INTO schools (user_id, registration_number, school_name, ministry_verified, bank_account_number, wallet_address, is_whitelisted) VALUES
 (1, 'EDU-KE-2024-001', 'University of Nairobi', TRUE, '0123456789', '0x742d35Cc6634C0532925a3b8D7389D75cF8b8F9C', TRUE),
 (2, 'EDU-KE-2024-002', 'JKUAT', TRUE, '0234567891', '0x853d35Cc6634C0532925a3b8D7389D75cF8b8F9D', TRUE),
 (3, 'EDU-KE-2024-003', 'Maseno University', TRUE, '0345678912', '0x964d35Cc6634C0532925a3b8D7389D75cF8b8F9E', TRUE),
 (4, 'EDU-KE-2024-004', 'Egerton University', TRUE, '0456789123', '0xa75d35Cc6634C0532925a3b8D7389D75cF8b8F9F', TRUE),
-(5, 'EDU-KE-2024-005', 'Kenyatta University', TRUE, '0567891234', '0xb86d35Cc6634C0532925a3b8D7389D75cF8b8F90', TRUE);
+(5, 'EDU-KE-2024-005', 'Kenyatta University', TRUE, '0567891234', '0xb86d35Cc6634C0532925a3b8D7389D75cF8b8F90', TRUE)
+ON CONFLICT (registration_number) DO NOTHING;
 
 -- Seed 3 mock donors
 INSERT INTO users (email, phone, national_id, full_name, role, password_hash, is_whitelisted) VALUES
 ('donor1@foundation.or.ke', '+254711000001', 'DONOR001', 'Safaricom Foundation', 'donor', '$2a$10$hashd1', TRUE),
 ('donor2@trust.or.ke', '+254711000002', 'DONOR002', 'Equity Bank Trust', 'donor', '$2a$10$hashd2', TRUE),
-('donor3@ngo.or.ke', '+254711000003', 'DONOR003', 'Tech Innovators NGO', 'donor', '$2a$10$hashd3', TRUE);
+('donor3@ngo.or.ke', '+254711000003', 'DONOR003', 'Tech Innovators NGO', 'donor', '$2a$10$hashd3', TRUE)
+ON CONFLICT (email) DO NOTHING;
 
 INSERT INTO donors (user_id, organization_name, tax_id, kyc_status, total_donated_usd) VALUES
 (6, 'Safaricom Foundation', 'TAX-001', 'approved', 247500),
@@ -45,7 +64,8 @@ INSERT INTO users (email, phone, national_id, full_name, role, password_hash, is
 ('student17@uonbi.ac.ke', '+254720000017', 'STUD017', 'Joseph Kamau', 'student', '$2a$10$hashs17', TRUE),
 ('student18@uonbi.ac.ke', '+254720000018', 'STUD018', 'Jane Wambui', 'student', '$2a$10$hashs18', TRUE),
 ('student19@jkuit.ac.ke', '+254720000019', 'STUD019', 'Daniel Kiprono', 'student', '$2a$10$hashs19', TRUE),
-('student20@jkuit.ac.ke', '+254720000020', 'STUD020', 'Faith Chelangat', 'student', '$2a$10$hashs20', TRUE);
+('student20@jkuit.ac.ke', '+254720000020', 'STUD020', 'Faith Chelangat', 'student', '$2a$10$hashs20', TRUE)
+ON CONFLICT (email) DO NOTHING;
 
 INSERT INTO students (user_id, school_id, student_reg_number, course, year_of_study, county, gpa) VALUES
 (9, 1, 'CS001', 'Computer Science', 1, 'Nairobi', 3.8),
@@ -67,7 +87,8 @@ INSERT INTO students (user_id, school_id, student_reg_number, course, year_of_st
 (25, 5, 'CS017', 'Computer Science', 3, 'Nairobi', 3.6),
 (26, 5, 'IT018', 'Information Technology', 2, 'Nakuru', 3.7),
 (27, 5, 'EN019', 'Engineering', 4, 'Eldoret', 3.5),
-(28, 5, 'BS020', 'Business', 3, 'Kakamega', 3.8);
+(28, 5, 'BS020', 'Business', 3, 'Kakamega', 3.8)
+ON CONFLICT (student_reg_number) DO NOTHING;
 
 -- Sample fee master entries
 INSERT INTO fee_master (school_id, academic_year, course, year_of_study, tuition_amount, accommodation_amount, food_amount, transport_amount) VALUES
@@ -80,7 +101,8 @@ INSERT INTO fee_master (school_id, academic_year, course, year_of_study, tuition
 (4, '2024-2025', 'Education', 3, 30000, 12000, 8000, 2500),
 (4, '2024-2025', 'Law', 2, 65000, 18000, 10000, 3500),
 (5, '2024-2025', 'Computer Science', 3, 52000, 22000, 14000, 4500),
-(5, '2024-2025', 'Engineering', 4, 58000, 16000, 12000, 4000);
+(5, '2024-2025', 'Engineering', 4, 58000, 16000, 12000, 4000)
+ON CONFLICT (school_id, academic_year, course, year_of_study) DO NOTHING;
 
 -- Sample student balances
 INSERT INTO student_balances (student_id, academic_year, coverage_type, original_fee, amount_paid, balance_remaining) VALUES
