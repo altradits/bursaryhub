@@ -1,11 +1,9 @@
 package handlers
 
 import (
-	"database/sql"
 	"encoding/json"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/altradits/bursaryhub/backend/models"
@@ -82,7 +80,7 @@ func BulkUpdateFeeMaster(w http.ResponseWriter, r *http.Request) {
 			newBalance := calculator.CalculateAutoBalance(0, req.NewTuition, paidToDate)
 
 			preview = append(preview, map[string]interface{}{
-				"student":      student.FullName,
+				"student_id": student.ID,
 				"old_balance":  oldBalance,
 				"paid_to_date": paidToDate,
 				"new_balance":  newBalance,
@@ -221,6 +219,7 @@ func GetSchoolDisbursements(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(disbursements)
 }
 
+// parseUint helper
 func parseUint(s string) uint {
 	v, _ := strconv.ParseUint(s, 10, 32)
 	return uint(v)

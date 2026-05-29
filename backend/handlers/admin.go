@@ -48,7 +48,10 @@ func GetMismatches(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(mismatches)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"mismatches": mismatches,
+		"count":      len(mismatches),
+	})
 }
 
 // ResolveMismatch handles POST /admin/mismatches/{id}/resolve

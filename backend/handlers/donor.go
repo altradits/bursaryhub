@@ -66,7 +66,10 @@ func GetDonorScholarships(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(scholarships)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"scholarships": scholarships,
+		"count":        len(scholarships),
+	})
 }
 
 // GetScholarshipApplications handles GET /donor/scholarships/{id}/applications
@@ -113,7 +116,10 @@ func GetDonorDisbursements(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(disbursements)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"disbursements": disbursements,
+		"count":         len(disbursements),
+	})
 }
 
 // GetImpactReport handles GET /donor/impact-report
@@ -156,4 +162,10 @@ func GetCostBreakdown(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(breakdown)
+}
+
+
+func parseFloat(s string) float64 {
+	v, _ := strconv.ParseFloat(s, 64)
+	return v
 }

@@ -3,7 +3,7 @@ package repository
 import (
 	"database/sql"
 
-	"github.com/stathuita/bursaryhub/backend/models"
+	"github.com/altradits/bursaryhub/backend/models"
 )
 
 type AdminRepo struct {

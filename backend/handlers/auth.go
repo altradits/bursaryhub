@@ -56,7 +56,7 @@ func VerifyOTP(w http.ResponseWriter, r *http.Request) {
 	// Generate JWT
 	secret := []byte(os.Getenv("JWT_SECRET"))
 	if len(secret) == 0 {
-		secret = []byte("default-secret-key")
+		secret = []byte("bursaryhub-dev-secret-change-in-production")
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

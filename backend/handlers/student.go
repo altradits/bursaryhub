@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/altradits/bursaryhub/backend/models"
@@ -29,7 +28,10 @@ func GetAvailableScholarships(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(scholarships)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"scholarships": scholarships,
+		"count":        len(scholarships),
+	})
 }
 
 // ApplyForScholarship handles POST /student/scholarships/{id}/apply
@@ -86,13 +88,6 @@ func StudentThreeWayVerify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create three-way verification record
-	verification := &models.ThreeWayVerification{
-		DisbursementID:       req.DisbursementID,
-		StudentEnteredAmount: req.EnteredAmount,
-		MatchResult:          false,
-	}
-
 	// In production, save to database
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
@@ -107,8 +102,7 @@ func StudentThreeWayVerify(w http.ResponseWriter, r *http.Request) {
 
 // RequestOTP handles POST /student/claims/{claimId}/request-otp
 func RequestOTP(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	claimID := parseUint(vars["id"])
+	_ = parseUint(mux.Vars(r)["id"]) // claimID used for future validation
 
 	otp := services.GenerateOTP()
 	services.SendOTP("", otp)
@@ -153,9 +147,4 @@ func GetStudentDisbursements(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(disbursements)
-}
-
-func parseUint(s string) uint {
-	v, _ := strconv.ParseUint(s, 10, 32)
-	return uint(v)
 }

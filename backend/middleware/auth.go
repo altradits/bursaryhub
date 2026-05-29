@@ -8,8 +8,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtSecret = []byte(getEnv("JWT_SECRET", "default-secret-key"))
-
 func getEnv(key, defaultValue string) string {
 	value := os.Getenv(key)
 	if value == "" {
@@ -44,8 +42,9 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			tokenString = tokenString[7:]
 		}
 
+		secret := []byte(getEnv("JWT_SECRET", "bursaryhub-dev-secret-change-in-production"))
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			return jwtSecret, nil
+			return secret, nil
 		})
 
 		if err != nil || !token.Valid {

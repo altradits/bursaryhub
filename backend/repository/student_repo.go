@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/stathuita/bursaryhub/backend/models"
+	"github.com/altradits/bursaryhub/backend/models"
 )
 
 type StudentRepo struct {

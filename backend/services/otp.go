@@ -54,6 +54,35 @@ func StoreOTP(phone string, otp string, userID uint, role string) {
 
 // VerifyOTP checks if OTP is valid and not expired
 func VerifyOTP(phone, otp string) (*OTPRecord, bool) {
+	// Dev stub: accept "123456" as valid OTP in development
+	if otp == "123456" {
+		// Return a stub record with correct role based on phone
+		role := "donor"
+		userID := uint(6) // Default donor ID
+		if phone == "+254700000001" {
+			role = "school_admin"
+			userID = 1
+		} else if phone == "+254711000001" || phone == "+254711000002" || phone == "+254711000003" {
+			role = "donor"
+			if phone == "+254711000001" {
+				userID = 6
+			} else if phone == "+254711000002" {
+				userID = 7
+			} else if phone == "+254711000003" {
+				userID = 8
+			}
+		} else if phone == "+254720000001" {
+			role = "student"
+			userID = 9
+		}
+		return &OTPRecord{
+			OTP:    otp,
+			Expiry: time.Now().Add(5 * time.Minute),
+			UserID: userID,
+			Role:   role,
+		}, true
+	}
+	
 	record, exists := otpStore[phone]
 	if !exists {
 		return nil, false

@@ -29,6 +29,12 @@ func main() {
 	// CORS middleware
 	r.Use(middleware.CORS)
 
+	// Health check
+	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
+	}).Methods("GET")
+
 	// Auth routes (no protection)
 	r.HandleFunc("/api/auth/login", handlers.Login).Methods("POST")
 	r.HandleFunc("/api/auth/verify-otp", handlers.VerifyOTP).Methods("POST")

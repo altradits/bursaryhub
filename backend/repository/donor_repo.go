@@ -3,7 +3,7 @@ package repository
 import (
 	"database/sql"
 
-	"github.com/stathuita/bursaryhub/backend/models"
+	"github.com/altradits/bursaryhub/backend/models"
 )
 
 type DonorRepo struct {
@@ -43,10 +43,11 @@ func (r *DonorRepo) CreateScholarship(s *models.Scholarship) error {
 		endDate = nil
 	}
 
-	_, err := r.db.Exec(`
+	err := r.db.QueryRow(`
 		INSERT INTO scholarships (donor_id, title, coverage_type, max_amount_per_student, number_of_slots, eligible_courses, eligible_years, min_gpa, is_active, application_start_date, application_end_date)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-	`, s.DonorID, s.Title, s.CoverageType, s.MaxAmountPerStudent, s.NumberOfSlots, s.EligibleCourses, s.EligibleYears, s.MinGPA, s.IsActive, startDate, endDate)
+		RETURNING id
+	`, s.DonorID, s.Title, s.CoverageType, s.MaxAmountPerStudent, s.NumberOfSlots, s.EligibleCourses, s.EligibleYears, s.MinGPA, s.IsActive, startDate, endDate).Scan(&s.ID)
 	return err
 }
 
